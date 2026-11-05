@@ -3,7 +3,7 @@
 import { createContext, useCallback, useContext, useMemo, useState } from 'react'
 import type { TxRequest } from '@/lib/squeek/types'
 
-export type TabId = 'home' | 'squeeks' | 'ai' | 'merge' | 'plan'
+export type TabId = 'home' | 'squeeks' | 'apps' | 'merge' | 'plan'
 
 export type SheetState =
   | { type: 'auth' }

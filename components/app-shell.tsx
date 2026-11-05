@@ -1,11 +1,11 @@
 'use client'
 
-import { Bot, GitMerge, Home, LineChart, Rat, TriangleAlert, User } from 'lucide-react'
+import { GitMerge, Home, LayoutGrid, LineChart, Rat, TriangleAlert, User } from 'lucide-react'
 import { AuthSheet } from '@/components/sheets/auth-sheet'
 import { ProfileSheet, ReceiveSheet } from '@/components/sheets/profile-sheet'
 import { TxSheet } from '@/components/sheets/tx-sheet'
 import { WithdrawSheet } from '@/components/sheets/withdraw-sheet'
-import { AiTab } from '@/components/tabs/ai-tab'
+import { AppsTab } from '@/components/tabs/apps-tab'
 import { HomeTab } from '@/components/tabs/home-tab'
 import { MergeTab } from '@/components/tabs/merge-tab'
 import { PlanTab } from '@/components/tabs/plan-tab'
@@ -22,7 +22,7 @@ const TABS: { id: TabId; label: string; Icon: React.ComponentType<{ className?: 
   { id: 'squeeks', label: 'Squeeks', Icon: Rat },
   { id: 'merge', label: 'Merge', Icon: GitMerge },
   { id: 'plan', label: 'Plan', Icon: LineChart },
-  { id: 'ai', label: 'Ask', Icon: Bot },
+  { id: 'apps', label: 'Apps', Icon: LayoutGrid },
 ]
 
 function Header() {
@@ -107,7 +107,7 @@ export function AppShell() {
         {tab === 'squeeks' && <SqueeksTab />}
         {tab === 'merge' && <MergeTab />}
         {tab === 'plan' && <PlanTab />}
-        {tab === 'ai' && <AiTab />}
+        {tab === 'apps' && <AppsTab />}
       </main>
       <nav
         aria-label="Primary"
