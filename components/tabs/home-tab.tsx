@@ -110,7 +110,7 @@ export function HomeTab() {
   const unclaimed = sqkToNumber(data.unclaimed)
   const total = wallet + unclaimed
   const active = data.squeeks.reduce((t, s) => t + Number(s.activeWeight), 0)
-  const pending = data.squeeks.reduce((t, s) => t + Number(s.pendingWeight), 0)
+  const idle = data.squeeks.reduce((t, s) => t + (s.custody === 'wallet' ? Number(s.power) : 0), 0)
   const ethBalance = Number(data.ethBalance) / 1e18
 
   return (
@@ -159,17 +159,17 @@ export function HomeTab() {
       <Card className="flex flex-col gap-5">
         <SectionTitle>Allocation</SectionTitle>
         <Split
-          label="Mining power"
+          label="Squeek power"
           a={active}
-          b={pending}
+          b={idle}
           aLabel={`${formatCompact(active)} earning`}
-          bLabel={`${formatCompact(pending)} activating`}
+          bLabel={`${formatCompact(idle)} not staked`}
         />
         <Split
           label="SQK"
           a={unclaimed}
           b={wallet}
-          aLabel={`${formatNumber(unclaimed, 2)} unclaimed in mining`}
+          aLabel={`${formatNumber(unclaimed, 2)} unclaimed in staking`}
           bLabel={`${formatNumber(wallet, 2)} in wallet`}
         />
         <div className="flex items-center justify-between border-t border-border pt-4 text-xs">

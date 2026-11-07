@@ -6,7 +6,7 @@ import { ConnectPrompt } from '@/components/connect-prompt'
 import { useAuth } from '@/lib/auth'
 import { useAccountData } from '@/lib/hooks'
 import { mergeRequest } from '@/lib/squeek/actions'
-import { blocksToDuration, formatSqk } from '@/lib/squeek/format'
+import { blocksToDuration } from '@/lib/squeek/format'
 import { mergeState, weightOf } from '@/lib/squeek/planner'
 import { useUI } from '@/lib/ui-context'
 import { cn } from '@/lib/utils'
@@ -31,7 +31,7 @@ export function MergeTab() {
     const s = byId.get(id)!
     setPicked((prev) => {
       if (prev.includes(id)) return prev.filter((x) => x !== id)
-      const sameLevel = prev.filter((p) => byId.get(p)?.level === s.level)
+      const sameLevel = prev.filter((p) => byId.get(p)?.level === s.level && byId.get(p)?.custody === s.custody)
       return [...sameLevel, id].slice(-2)
     })
   }
@@ -42,12 +42,6 @@ export function MergeTab() {
   function review() {
     if (!survivor || !donor) return
     const tx = mergeRequest(survivor, donor, network)
-    if (BigInt(donor.claimable) > 0n) {
-      tx.warnings = [
-        `Squeek #${donor.tokenId} has ${formatSqk(donor.claimable, 4)} SQK unclaimed. Claim it first, a burned Squeek cannot be claimed afterwards.`,
-        ...(tx.warnings ?? []),
-      ]
-    }
     openSheet({ type: 'tx', tx })
   }
 
@@ -62,7 +56,7 @@ export function MergeTab() {
       <Card>
         <p className="text-sm leading-relaxed text-muted-foreground">
           Pick two Squeeks of the same level. The first you pick is kept and levels up, the second is{' '}
-          <span className="font-semibold text-foreground">burned permanently</span>. New power starts earning from the next round.
+          <span className="font-semibold text-foreground">burned permanently</span>. Both must be at the same level and both staked, or both in your wallet. Staked Squeeks merge through the staking contract and count at once.
         </p>
       </Card>
 
@@ -88,7 +82,7 @@ export function MergeTab() {
                     <SqueekAvatar tokenId={s.tokenId} className="size-10" />
                     <span className="flex-1">
                       <span className="block text-sm font-semibold">Squeek #{s.tokenId}</span>
-                      <span className="block text-xs text-muted-foreground">Level {s.level}</span>
+                      <span className="block text-xs text-muted-foreground">Level {s.level}, {s.custody === 'staked' ? 'staked' : 'in wallet'}</span>
                     </span>
                     {idx === 0 && <Badge tone="lime">Keep</Badge>}
                     {idx === 1 && <Badge tone="down">Burn</Badge>}
@@ -113,7 +107,6 @@ export function MergeTab() {
                     #{s.tokenId} <span className="text-xs text-muted-foreground">Level {s.level}</span>
                   </span>
                   <Badge tone="muted">
-                    {st.state === 'activating' && 'Activating'}
                     {st.state === 'max' && 'Max level'}
                     {st.state === 'cooldown' && `Cooldown ${blocksToDuration(st.blocksLeft, network.blocksPerDay)}`}
                   </Badge>

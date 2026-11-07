@@ -21,6 +21,10 @@ export type NetworkStats = {
 export type SqueekPosition = {
   tokenId: string
   level: number
+  /** 'wallet' = held in the wallet (not earning). 'staked' = deposited in SqueekStaking (earning). */
+  custody: 'wallet' | 'staked'
+  /** Base power for this level, in whole power units (same units as the network level table). */
+  power: string
   activeWeight: string
   pendingWeight: string
   pendingRound: number
@@ -44,8 +48,11 @@ export type AccountData = {
   network: NetworkStats
   squeeks: SqueekPosition[]
   sqkBalance: string
+  /** Claimable SQK for the whole account (rewards belong to the staker, not to a Squeek). */
   unclaimed: string
   ethBalance: string
+  /** Whether SqueekStaking is approved to take this wallet's Squeeks. */
+  stakingApproved: boolean
   activity: ActivityItem[]
 }
 
@@ -65,6 +72,6 @@ export type TxRequest = {
 }
 
 export type Proposal =
-  | { action: 'claim'; tokenIds: string[]; rationale: string }
+  | { action: 'claim'; rationale: string }
   | { action: 'checkpoint'; rationale: string }
   | { action: 'merge'; survivorId: string; donorId: string; rationale: string }

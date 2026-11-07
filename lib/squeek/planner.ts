@@ -16,12 +16,8 @@ export function mergeState(
 }
 
 export function miningLabel(p: SqueekPosition): { label: string; tone: 'up' | 'warn' | 'muted' } {
-  const active = BigInt(p.activeWeight) > 0n
-  const pending = BigInt(p.pendingWeight) > 0n
-  if (active && pending) return { label: 'Earning, new power pending', tone: 'warn' }
-  if (active) return { label: 'Earning', tone: 'up' }
-  if (pending) return { label: 'Activating', tone: 'warn' }
-  return { label: 'Not earning', tone: 'muted' }
+  if (p.custody === 'staked') return { label: 'Staked, earning', tone: 'up' }
+  return { label: 'In wallet, not earning', tone: 'warn' }
 }
 
 export function weightOf(network: NetworkStats, level: number): number {
